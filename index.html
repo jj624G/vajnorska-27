@@ -13,8 +13,8 @@
   :root {
     --bg: #0d0f13; --bg-raised: #14171d; --surface: #191d25; --line: #2b303c;
     --text: #f2f0ea; --text-soft: #99a0b2;
-    --accent: #7c93b8; --accent-soft: rgba(124,147,184,0.16);
-    --blue: #7c93b8; --blue-soft: rgba(124,147,184,0.16);
+    --accent: #c9684f; --accent-soft: rgba(201,104,79,0.16);
+    --blue: #c9684f; --blue-soft: rgba(201,104,79,0.16);
     --green: #6f9a84; --green-soft: rgba(111,154,132,0.16);
   }
   * { box-sizing: border-box; }
@@ -25,10 +25,17 @@
   .stage { position: fixed; inset: 0; }
   .slide { position: absolute; inset: 0; opacity: 0; transform: scale(1.02); transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.16,0.7,0.2,1); }
   .tour-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 8; background: rgba(255,255,255,0.1); }
-  .tour-progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.5s cubic-bezier(0.22,0.68,0,1); box-shadow: 0 0 8px rgba(124,147,184,0.6); }
+  .tour-progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.5s cubic-bezier(0.22,0.68,0,1); box-shadow: 0 0 8px rgba(201,104,79,0.6); }
   .slide.active { opacity: 1; z-index: 2; transform: scale(1); }
   .slide .bg, .slide .fg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .slide video.fg { object-fit: contain; background: #000; }
+  .video-qr { position: absolute; top: 1.1rem; right: 1.1rem; z-index: 5; background: rgba(13,15,19,0.82);
+    backdrop-filter: blur(6px); border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.35rem; pointer-events: none; }
+  .video-qr img { width: 4.2rem; height: 4.2rem; border-radius: 4px; display: block; }
+  .video-qr span { font-family: 'IBM Plex Mono', monospace; font-size: 0.56rem; color: var(--text-soft);
+    text-align: center; line-height: 1.25; max-width: 4.6rem; }
+  @media (max-width: 480px) { .video-qr { display: none; } }
   .slide .bg { display: none; }
   @media (orientation: portrait) {
     .slide .bg { display: none; }
@@ -59,7 +66,7 @@
     background: rgba(18,18,18,0.55); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px);
     color: var(--text); font-size: 1.3rem; display: flex; align-items: center; justify-content: center;
     cursor: pointer; transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease; }
-  .arrow:hover { background: var(--accent-soft); transform: scale(1.08); box-shadow: 0 4px 18px rgba(124,147,184,0.35); }
+  .arrow:hover { background: var(--accent-soft); transform: scale(1.08); box-shadow: 0 4px 18px rgba(201,104,79,0.35); }
   .arrow:active { transform: scale(0.96); }
 
   .caption { position: fixed; left: 1.4rem; right: 1.4rem; bottom: 7.5rem; z-index: 6; max-width: 27rem; pointer-events: none; }
@@ -98,7 +105,7 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
   .room-btn img { transition: transform 0.25s ease, border-color 0.25s ease; }
   .room-btn:hover img { transform: translateY(-3px); border-color: var(--text-soft); }
-  .room-btn.current img { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 4px 14px rgba(124,147,184,0.35); transform: translateY(-2px); }
+  .room-btn.current img { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 4px 14px rgba(201,104,79,0.35); transform: translateY(-2px); }
   .room-btn.current span { color: var(--accent); font-weight: 500; }
   .room-btn.roi-btn { width: 3.4rem; }
   .room-btn.roi-btn .roi-icon { width: 100%; height: 3rem; border-radius: 3px; border: 1px solid var(--accent); background: var(--accent-soft);
@@ -107,7 +114,7 @@
   /* ---------- ROI closing slide ---------- */
   .roi-slide { position: absolute; inset: 0; background: var(--bg); overflow-y: auto; overflow-x: hidden; padding: 4rem 1.4rem 9rem; isolation: isolate; }
   .roi-glow { position: absolute; top: -12%; right: -14%; width: 62vw; height: 62vw; max-width: 42rem; max-height: 42rem;
-    background: radial-gradient(circle, rgba(124,147,184,0.24) 0%, rgba(124,147,184,0) 72%);
+    background: radial-gradient(circle, rgba(201,104,79,0.24) 0%, rgba(201,104,79,0) 72%);
     pointer-events: none; z-index: 0; opacity: 0; }
   #stage-roi.active .roi-glow { opacity: 1; animation: roiGlowDrift 16s ease-in-out infinite; }
   @keyframes roiGlowDrift { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-5%, 7%) scale(1.08); } }
@@ -149,15 +156,11 @@
   .spec-box { margin-top: 2.4rem; background: var(--surface); border: 1px solid var(--line); padding: 1.6rem 1.5rem;
     opacity: 0; transform: translateY(14px); }
   #stage-roi.active .spec-box { animation: capIn 0.6s ease 1.3s forwards; }
-  .roi-closer { margin: 1.6rem 0 0; font-family: 'Newsreader', serif; font-style: italic; font-weight: 500;
-    font-size: 1.05rem; line-height: 1.5; color: var(--text); max-width: 30rem;
-    opacity: 0; transform: translateY(10px); }
-  #stage-roi.active .roi-closer { animation: capIn 0.6s ease 1.9s forwards; }
   .roi-contact { margin: 1rem 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem;
     color: var(--text-soft); opacity: 0; transform: translateY(10px); }
   .roi-contact a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-soft); }
   .roi-contact a:hover { border-bottom-color: var(--accent); }
-  #stage-roi.active .roi-contact { animation: capIn 0.6s ease 2.1s forwards; }
+  #stage-roi.active .roi-contact { animation: capIn 0.6s ease 1.5s forwards; }
   .spec-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); }
   .spec-h { font-family: 'Newsreader', serif; font-weight: 600; font-size: clamp(1.2rem, 3vw, 1.5rem); text-transform: uppercase;
     margin: 0.4rem 0 1.2rem; color: var(--text); }
@@ -292,7 +295,8 @@
     slide.id = 'stage-' + r.id;
     slide.innerHTML = r.video ?
       ('<img class="bg" src="' + r.thumb + '" alt="" aria-hidden="true" decoding="async">' +
-       '<video class="fg" src="' + r.video + '" poster="' + r.thumb + '" controls playsinline preload="metadata"></video>') :
+       '<video class="fg" src="' + r.video + '" poster="' + r.thumb + '" controls playsinline preload="metadata"></video>' +
+       '<div class="video-qr"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjAAAAIwCAIAAAAXk8Y4AAALpklEQVR4nO3dMU5sRxRFUdpiFh049vwH49gBCRFiBJYnYKkkrnpfaq3886tfP9iq6Dy+vz7fAODV/nj1AQDgP4IEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZDwfvoPnn/+NXOSS3388/fozz/9vqbPM632ead/X07PX/v9rb1vteez3en364YEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSADs3EPavneyfU+lttdSO09N7f2f3k+q7UtNn6f2/W7/fXdDAiBBkABIECQAEgQJgARBAiBBkABIECQAEgQJgARBAiBBkABIECQAEgQJgARBAiBBkABIECQA7thD2r6vY+/ktfs6p27b47ntPNt/H/19+39uSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQEJuD4ldans82/eftu8D1c7DLm5IACQIEgAJggRAgiABkCBIACQIEgAJggRAgiABkCBIACQIEgAJggRAgiABkCBIACQIEgAJggRAgj2kZab3eKZNn+e2PZ7a93vbnhY/yw0JgARBAiBBkABIECQAEgQJgARBAiBBkABIECQAEgQJgARBAiBBkABIECQAEgQJgARBAiBBkABIyO0h2Tv5Wduf5+lezvS+Tm1/qHb+2vOvvf+189S4IQGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAHfsIdX2Y7bbvjdT+/nTas/n1PbnP+22zzvNDQmABEECIEGQAEgQJAASBAmABEECIEGQAEgQJAASBAmABEECIEGQAEgQJAASBAmABEECIEGQANi5hzS9v8KuvZbafs+02vm37/HUzl/7fm/jhgRAgiABkCBIACQIEgAJggRAgiABkCBIACQIEgAJggRAgiABkCBIACQIEgAJggRAgiABkCBIAOzcQ7pt/+a253N6ntre0vTPn34+tZ9/qvY+T78/05/3edlelBsSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGwcw9pu+n9mNoeTG3/prbfU9vLqe3f1M5zqvb7WHueH7Hn44YEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkPL6/Pt9usn2PZPv5a6b3mbbvLdW+39rzPHXb+3bKDQmABEECIEGQAEgQJAASBAmABEECIEGQAEgQJAASBAmABEECIEGQAEgQJAASBAmABEECIEGQAEh4n/4Ptu+vnJo+f+351L7f7XtRtfOfqp1/+/N/Lj/P6fN3QwIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIe31+fq/c5tu/rbD//dtN7Odv3eGrv523nmVb7vG5IACQIEgAJggRAgiABkCBIACQIEgAJggRAgiABkCBIACQIEgAJggRAgiABkCBIACQIEgAJggRAwvvbcrftx2w/z/bv99Rt59/+vm1/Ps/h923687ohAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACY/vr8+r9mBO9zlq5+dn1fZ7avs6288//ft729+Tj+Hvyw0JgARBAiBBkABIECQAEgQJgARBAiBBkABIECQAEgQJgARBAiBBkABIECQAEgQJgARBAiBBkABIeN++L3LbXkvtPKfs97z259dsf/618z+HzzP9892QAEgQJAASBAmABEECIEGQAEgQJAASBAmABEECIEGQAEgQJAASBAmABEECIEGQAEgQJAASBAmAnXtI2/c8pvc/bnPb+3Dqtr0cfvf7PM0NCYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAA2LmHNL0PtH2vaPv5a2r7QNNq56m9/9N7QrW9qGfs7+00NyQAEgQJgARBAiBBkABIECQAEgQJgARBAiBBkABIECQAEgQJgARBAiBBkABIECQAEgQJgARBAiDh8f31edWehz2V16o9z9r3tf37Zdde2kfs98UNCYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAA2LmHVNunqantGznP79432n7+7fs9p7b/fTtlDwmAlQQJgARBAiBBkABIECQAEgQJgARBAiBBkABIECQAEgQJgARBAiBBkABIECQAEgQJgARBAmDnHtKp2/ZRaj+/Zvt+z23vw/bv61Tt+W//vk65IQGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSADv3kGr7HzX2cn7W9PM5tf39r+3l1L7fadt/H6e5IQGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAnv0/9BbZ9mek9o+75Lbc/ptvfH5/3dP3/ac/nekhsSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAFwxx5Sbc9j+17I9udzqra3tH0vp2b786yd/7l8L8oNCYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASHh8f32u3suZ3vPgtWr7MadqezO1/Z5Tt/3+fsTe/+nzuCEBkCBIACQIEgAJggRAgiABkCBIACQIEgAJggRAgiABkCBIACQIEgAJggRAgiABkCBIACQIEgA795B4rdp+z3a37ets3+PZ/j7X9q6mnZ7fDQmABEECIEGQAEgQJAASBAmABEECIEGQAEgQJAASBAmABEECIEGQAEgQJAASBAmABEECIEGQAEh4P/0Htb2N7U73Qrbvo5yqnb+2r8OuvaLtPoY/rxsSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGwcw/p1G17Ibft90x/3tv2n7ab3hOqvW/Tnpd9XjckABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQLgjj2kU7U9m9peSE1tb2l6X+e2fZrt56/9Pbnt+Z9yQwIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABJye0js2hOatv0803s8tb2oU6fnmT7/9ufzjO0/nZ7fDQmABEECIEGQAEgQJAASBAmABEECIEGQAEgQJAASBAmABEECIEGQAEgQJAASBAmABEECIEGQAEiwh/TL1fZjtvN8fpbn+bv3nE65IQGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAm5PaTb9k6mTe+dbN9rue19q31f08+/9r6d+lj+/E+5IQGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAAmCBECCIAGQIEgAJAgSAHfsIdX2RbbbvndS2+OpvZ+nn3f73s9te1e1faNn7O+JGxIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZAgSAAkCBIACYIEQIIgAZDw+P76fPUZAMANCYAGQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAASBAkABIECYAEQQIgQZAAeCv4F6T36lDwnxzoAAAAAElFTkSuQmCC" alt="QR"><span>Rýchle video<br>v telefóne</span></div>') :
       ('<img class="bg" src="' + r.src + '" alt="" aria-hidden="true" decoding="async">' +
        '<img class="fg" src="' + r.src + '" alt="' + r.name + '" decoding="async">');
     stage.appendChild(slide);
@@ -340,7 +344,6 @@
           '<div class="spec-item"><div class="spec-v num">2 566 €</div><div class="spec-l">cena za m²</div></div>' +
         '</div>' +
       '</div>' +
-      '<p class="roi-closer">Kompletne pripravené, oficiálne povolené, nula ďalšej investície — takáto kombinácia sa v Bratislave neobjavuje často. A ani dlho nevydrží.</p>' +
       '<p class="roi-contact">V prípade akýchkoľvek otázok nás neváhajte kontaktovať: <a href="mailto:vajnorska27@outlook.com">vajnorska27@outlook.com</a></p>' +
     '</div></div>';
   stage.appendChild(roiSlide);
